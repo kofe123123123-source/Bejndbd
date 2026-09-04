@@ -43,8 +43,16 @@ def set_king_rank(id_token):
     r = requests.post(url, json=body, headers=headers)
     return r.status_code, r.text
 
-@app.route('/king_rank', methods=['POST'])
+@app.route('/king_rank', methods=['POST', 'OPTIONS'])
 def king_rank():
+    if request.method == 'OPTIONS':
+        # Ответ для предварительного запроса CORS
+        response = jsonify({'ok': True})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        return response, 204
+
     data = request.json
     email = data.get('email')
     password = data.get('password')
@@ -55,9 +63,12 @@ def king_rank():
         return jsonify({"ok": False, "message": "Ошибка авторизации"}), 401
     status, text = set_king_rank(token)
     if status == 200:
-        return jsonify({"ok": True, "message": "Кинг ранг установлен!"})
+        resp = jsonify({"ok": True, "message": "Кинг ранг установлен!"})
     else:
-        return jsonify({"ok": False, "message": f"Ошибка: {text[:200]}"}), status
+        resp = jsonify({"ok": False, "message": f"Ошибка: {text[:200]}"})
+        resp.status_code = status
+    resp.headers.add('Access-Control-Allow-Origin', '*')
+    return resp
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=10000)
