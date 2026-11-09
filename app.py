@@ -21,7 +21,7 @@ def login(email, password):
     return None
 
 def set_king_rank(id_token):
-    url = "https://us-central1-cp-multiplayer.cloudfunctions.net/SetUserRating1"
+    url = "https://us-central1-cp-multiplayer.cloudfunctions.net/SetUserRating6"
     rating_data = {
         "cars": 100000, "car_fix": 100000, "car_collided": 100000,
         "car_exchange": 100000, "car_trade": 100000, "car_wash": 100000,
